@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: rsb_asset_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: LASTking
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    image: rpm-backend
+    container_name: rpm-backend
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: rsb_asset_management
+      DB_USER: postgres
+      DB_PASSWORD: LASTking
+      MAIL_PASSWORD: dpib_ecaf_poyk_ujnz
+      JWT_SECRET: 8f4HhPq2Xz9YbVr7Tc5NmKjLdS3GwE6A1DxUyZaB0CvF
+    restart: unless-stopped
+
+  frontend:
+    image: rpm-frontend
+    container_name: rpm-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
